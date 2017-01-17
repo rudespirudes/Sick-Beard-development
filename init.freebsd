@@ -1,0 +1,36 @@
+#!/bin/sh
+# $FreeBSD:$
+#
+# PROVIDE: sickbeard
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# sickbeard_enable (bool):	Set to NO by default.
+#			Set it to YES to enable it.
+# sickbeard_user:  The user account Sick Beard daemon runs as what
+#			you want it to be. It uses '_sabnzbd' user by
+#			default. Do not sets it as empty or it will run
+#			as root.
+# sickbeard_dir:	Directory where Sick Beard lives.
+#			Default: /usr/local/sickbeard
+
+. /etc/rc.subr
+
+name=sickbeard
+rcvar=sickbeard_enable
+
+load_rc_config ${name}
+
+: ${sickbeard_enable:=NO}
+: ${sickbeard_user:=_sabnzbd}
+: ${sickbeard_dir=/usr/local/sickbeard}
+
+pidfile=${sickbeard_dir}/sickbeard.pid
+procname="*python"
+command=${sickbeard_dir}/SickBeard.py
+command_args="--datadir=${sickbeard_dir} --daemon --pidfile=${pidfile}"
+
+run_rc_command "$1"
